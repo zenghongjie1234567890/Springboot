@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <!-- 以前给bean容器添加组件的写法 -->
+    <bean id="lol" class="com.zhj.boot.bean.game">
+        <constructor-arg index="0" value="英雄联盟"/>
+        <constructor-arg index="1" value="20"/>
+        </bean>
+
+    <bean id="cat" class="com.zhj.boot.bean.pet">
+        <constructor-arg index="0" value="猫猫"/>
+        <constructor-arg index="1" value="9"/>
+    </bean>
+</beans>

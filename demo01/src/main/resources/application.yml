@@ -1,0 +1,15 @@
+# 注意: yml配置文件里面的:后面都要空一个格子,不然不能识别
+# 应用服务 WEB 访问端口
+server:
+  port: 1122
+  # 设置上下文根
+  servlet:
+    context-path: /zhj
+
+
+girl:
+  age: 19
+  name: 赵银屏zhaoyingping
+
+
+
