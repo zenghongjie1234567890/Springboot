@@ -3,12 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
-    <artifactId>demo05_CRUD</artifactId>
+    <artifactId>demo04_mybatis_rerverseProject</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo05_CRUD</name>
-    <description>demo05_CRUD</description>
-
-
+    <name>demo04_mybatis_rerverseProject</name>
+    <description>demo04_mybatis_rerverseProject</description>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

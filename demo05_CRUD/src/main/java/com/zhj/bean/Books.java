@@ -70,4 +70,30 @@ public class Books {
     public void setImgPath(String imgPath) {
         this.imgPath = imgPath == null ? null : imgPath.trim();
     }
+
+    public Books() {
+    }
+
+    public Books(Integer id, String title, String author, Double price, Integer sales, Integer stock, String imgPath) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.sales = sales;
+        this.stock = stock;
+        this.imgPath = imgPath;
+    }
+
+    @Override
+    public String toString() {
+        return "Books{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", price=" + price +
+                ", sales=" + sales +
+                ", stock=" + stock +
+                ", imgPath='" + imgPath + '\'' +
+                '}';
+    }
 }

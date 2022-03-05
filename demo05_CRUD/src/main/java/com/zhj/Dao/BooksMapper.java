@@ -3,8 +3,11 @@ package com.zhj.Dao;
 import com.zhj.bean.Books;
 import com.zhj.bean.BooksExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface BooksMapper {
     long countByExample(BooksExample example);
 
