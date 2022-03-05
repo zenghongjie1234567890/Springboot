@@ -1,6 +1,9 @@
 package com.zhj.service;
 
 import com.zhj.bean.Books;
+import com.zhj.bean.BooksExample;
+
+import java.util.List;
 
 /**
  * Springboot
@@ -10,4 +13,7 @@ import com.zhj.bean.Books;
  **/
 public interface BookService {
     Books getById(Integer id);
+    List<Books> selectAll();
+    void delById(Integer id);
+    void updById(Books books);
 }

@@ -85,6 +85,9 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectAll" parameterType="com.zhj.bean.BooksExample" resultMap="BaseResultMap">
+    select * from books
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
