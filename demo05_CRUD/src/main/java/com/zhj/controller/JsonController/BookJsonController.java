@@ -1,12 +1,11 @@
 package com.zhj.controller.JsonController;
 
+import com.github.pagehelper.PageInfo;
 import com.zhj.bean.Books;
 import com.zhj.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.relational.core.sql.In;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,21 +18,46 @@ import java.util.List;
 @RestController
 public class BookJsonController {
     @Autowired
-    BookService bookService;
+    private BookService bookService;
 
-    @GetMapping
-    @RequestMapping("/zyp/{id}")
-    public Books index01(@PathVariable("id") Integer id) {
-        Books books = bookService.getById(id);
-        System.out.println(books);
-        return books;
+    @GetMapping("/findById/{id}")
+    public Books index01(@PathVariable("id") Integer id){
+        Books byId = bookService.getById(id);
+        System.out.println(byId);
+        System.out.println("id为:"+id+"的数据回显成功");
+        return byId;
     }
 
-    @GetMapping
-    @RequestMapping("/zyp")
-    public List<Books> index02() {
-        List<Books> all = bookService.selectAll();
-        System.out.println(all);
+    @PostMapping("/getAll")
+    public PageInfo<Books> index02(Integer CurrentPage,Integer size) {
+        PageInfo<Books> all = bookService.selectAll(CurrentPage, size);
         return all;
+    }
+
+    @DeleteMapping("/del/{id}")
+    public void index03(@PathVariable("id") Integer id){
+        bookService.delById(id);
+        System.out.println("删除成功");
+    }
+
+    // 从前端获取请求体数据要@RequestBody      从后端获取响应体数据要@ResponseBody
+    @PostMapping("/insertDate")
+    public void index04(@RequestBody Books books){
+        bookService.insertDa(books);
+        System.out.println(books);
+        System.out.println("添加成功");
+    }
+
+    @PutMapping("/update")
+    public void index05(@RequestBody Books books){
+        bookService.updById(books);
+        System.out.println("更新成功");
+    }
+
+    @PostMapping("/search")
+    public List<Books> index06(@RequestBody Books books) {
+        System.out.println(books);
+        List<Books> books1 = bookService.selectByTitle(books.getTitle());
+        return books1;
     }
 }

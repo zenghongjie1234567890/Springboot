@@ -1,7 +1,7 @@
 package com.zhj.service;
 
+import com.github.pagehelper.PageInfo;
 import com.zhj.bean.Books;
-import com.zhj.bean.BooksExample;
 
 import java.util.List;
 
@@ -13,7 +13,9 @@ import java.util.List;
  **/
 public interface BookService {
     Books getById(Integer id);
-    List<Books> selectAll();
+    PageInfo<Books> selectAll(Integer CurrentPage, Integer size);
     void delById(Integer id);
     void updById(Books books);
+    void insertDa(Books books);
+    List<Books> selectByTitle(String title);
 }

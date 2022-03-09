@@ -1,6 +1,9 @@
 package com.zhj.service.Impl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.zhj.Dao.BooksMapper;
 import com.zhj.bean.Books;
+import com.zhj.bean.BooksExample;
 import com.zhj.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,7 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BookService {
     @Autowired
-    BooksMapper booksMapper;
+    private BooksMapper booksMapper;
 
     @Override
     public Books getById(Integer id) {
@@ -24,8 +27,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Books> selectAll() {
-        return booksMapper.selectAll();
+    public PageInfo<Books> selectAll(Integer CurrentPage, Integer size) {
+        PageHelper.startPage(CurrentPage,size);
+        List<Books> books = booksMapper.selectByExample(null);
+        PageInfo<Books> info = new PageInfo<>(books);
+        return info;
     }
 
     @Override
@@ -36,5 +42,18 @@ public class BookServiceImpl implements BookService {
     @Override
     public void updById(Books books) {
         booksMapper.updateByPrimaryKey(books);
+    }
+
+    @Override
+    public void insertDa(Books books) {
+        booksMapper.insert(books);
+    }
+
+    @Override
+    public List<Books> selectByTitle(String title) {
+        BooksExample example = new BooksExample();
+        example.createCriteria().andTitleLike("%"+title+"%");
+        List<Books> books = booksMapper.selectByExample(example);
+        return books;
     }
 }

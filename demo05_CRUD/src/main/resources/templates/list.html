@@ -1,10 +1,316 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <!--引入vue.js-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--引入axios组件库-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta charset="UTF-8">
     <title>图书管理系统列表页</title>
-</head>
-<body>
+    <style>
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
 
+        body {
+            background-color: #E9EEF3;
+        }
+
+        .el-aside {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 100%;
+        }
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 100%;
+        }
+
+        body > .el-container {
+            margin-bottom: 40px;
+        }
+
+        .el-container {
+            height: 100%;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 260px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <el-container>
+        <el-header>图书管理系统</el-header>
+        <el-container>
+            <el-aside width="200px">
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo"
+                        @open="handleOpen"
+                        @close="handleClose">
+                    <el-menu-item index="1">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title" @click="begin">首页</span>
+                    </el-menu-item>
+                    <el-menu-item index="2">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title" @click="viewAll">列表页</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <i class="el-icon-menu"></i>
+                        <span @click="add">新增</span>
+                        <el-dialog title="图书新增信息" :visible.sync="dialogVisible">
+                            <el-form :model="books" label-width="80px">
+                                <el-form-item label="id">
+                                    <el-input v-model="books.id"></el-input>
+                                </el-form-item>
+                                <el-form-item label="title">
+                                    <el-input v-model="books.title"></el-input>
+                                </el-form-item>
+                                <el-form-item label="author">
+                                    <el-input v-model="books.author"></el-input>
+                                </el-form-item>
+                                <el-form-item label="price">
+                                    <el-input v-model="books.price"></el-input>
+                                </el-form-item>
+                                <el-form-item label="sales">
+                                    <el-input v-model="books.sales"></el-input>
+                                </el-form-item>
+                                <el-form-item label="stock">
+                                    <el-input v-model="books.stock"></el-input>
+                                </el-form-item>
+                                <el-form-item label="imgPath">
+                                    <el-input v-model="books.imgPath"></el-input>
+                                </el-form-item>
+                            </el-form>
+                            <span slot="footer" class="dialog-footer">
+                                        <el-button @click="dialogVisible = false">取 消</el-button>
+                                        <el-button type="primary" @click="addSuccess">确 定</el-button>
+                                    </span>
+                        </el-dialog>
+                        <el-dialog :visible.sync="EditVisible" title="图书更新信息">
+                            <el-form :model="books" label-width="80px">
+                                <el-form-item label="您当前的id是:">
+                                    <el-input v-model="books.id" disabled="disabled"></el-input>
+                                </el-form-item>
+                                <el-form-item label="title">
+                                    <el-input v-model="books.title"></el-input>
+                                </el-form-item>
+                                <el-form-item label="author">
+                                    <el-input v-model="books.author"></el-input>
+                                </el-form-item>
+                                <el-form-item label="price">
+                                    <el-input v-model="books.price"></el-input>
+                                </el-form-item>
+                                <el-form-item label="sales">
+                                    <el-input v-model="books.sales"></el-input>
+                                </el-form-item>
+                                <el-form-item label="stock">
+                                    <el-input v-model="books.stock"></el-input>
+                                </el-form-item>
+                                <el-form-item label="imgPath">
+                                    <el-input v-model="books.imgPath"></el-input>
+                                </el-form-item>
+                            </el-form>
+                            <span slot="footer" class="dialog-footer">
+                                                    <el-button @click="EditVisible = false">取 消</el-button>
+                                                    <el-button type="primary" @click="editSuccess">确 定</el-button>
+                                                </span>
+                        </el-dialog>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+            <el-container>
+                <el-main>
+                    <el-form :inline="true" class="demo-form-inline" :model="books" style="padding-right: 800px">
+                        <el-form-item label="查找的书名" >
+                            <el-input v-model="books.title" placeholder="请输入书名的关键字"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit">查询</el-button>
+                        </el-form-item>
+                    </el-form>
+                    <el-table :data=tableData style="width: 100%">
+                        <el-table-column label="id" prop="id" th:width="100px">
+                        </el-table-column>
+                        <el-table-column label="title" prop="title">
+                        </el-table-column>
+                        <el-table-column label="author" prop="author">
+                        </el-table-column>
+                        <el-table-column label="price" prop="price">
+                        </el-table-column>
+                        <el-table-column label="sales" prop="sales">
+                        </el-table-column>
+                        <el-table-column label="stock" prop="stock">
+                        </el-table-column>
+                        <el-table-column label="img_path" prop="imgPath">
+                        </el-table-column>
+                        <el-table-column align="right">
+                            <template slot-scope="scope">
+                                <el-button type="text" size="mini" @click="handleEdit(scope.$index, scope.row)"
+                                           slot="title">编辑
+                                </el-button>
+                                <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="block" style="padding-right: 660px;padding-top: 10px">
+                        <el-pagination
+                                @size-change="handleSizeChange"
+                                @current-change="handleCurrentChange"
+                                :current-page="currentPage4"
+                                :page-sizes="[100, 200, 300, 400]"
+                                :page-size="100"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="400">
+                        </el-pagination>
+                    </div>
+                </el-main>
+            </el-container>
+        </el-container>
+    </el-container>
+</div>
 </body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            tableData: [],
+            dialogVisible: false,
+            EditVisible: false,
+            dialogFormVisible: false,
+            books: {
+                id: null,
+                title: '',
+                author: '',
+                price: null,
+                sales: null,
+                stock: null,
+                imgPath: ''
+            },
+            test: {},
+            currentPage4: 7,
+        },
+        created() {
+            this.loadData();
+        },
+        methods: {
+            loadData() {
+                axios.post(`/getAll?CurrentPage=1&size=1`, {}).then((res) => {
+                    this.tableData = res.data.list
+                    this.books = {}
+                })
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+            },
+            viewAll() {
+                axios.get(`/getAll`, {}).then((res) => {
+                    this.tableData = res.data
+                })
+            },
+            onSubmit() {
+                console.log(this.books)
+                this.tableData = null
+                axios.post(`/search`, this.books).then((res) => {
+                    console.log(res)
+                    if (res.data.length == 0) {
+                        this.$message.info('查询失败，暂无该图书!')
+                    } else {
+                        this.$message.info('查询成功!')
+                        this.tableData = res.data
+                    }
+                }).catch((err) => {
+                    alert("错误！")
+                })
+            },
+            begin() {
+                this.tableData = null
+            },
+            handleOpen(key, keyPath) {
+            },
+            handleClose(key, keyPath) {
+            },
+            handleEdit(index, row) {
+                this.EditVisible = true
+                this.books.id = row.id
+                axios.get(`/findById/${this.books.id}`, {}).then((res) => {
+                    this.books = res.data
+                })
+            },
+            editSuccess() {
+                axios.put(`/update`, this.books).then((res) => {
+                    this.EditVisible = false
+                    this.$message.info('更新成功!')
+                    // 3秒后再执行该操作
+                    setTimeout(() => {
+                        // this.books=null
+                        this.loadData();
+                    }, 2000);
+                }).catch((err) => {
+                    this.$message.info('更新失败!')
+                })
+            },
+            async handleDelete(index, row) {
+                /*提示消息*/
+                const confirmResult = await this.$confirm('此操作将永久删除该职位, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).catch(err => err)
+                if (confirmResult !== 'confirm') {
+                    return this.$message.info('已取消删除!')
+                } else {
+                    axios.delete(`/del/${row.id}`, {}).then((res) => {
+                        this.$message.info('删除成功!')
+                        // 3秒后再执行该操作
+                        setTimeout(() => {
+                            this.loadData();
+                        }, 2000);
+                    })
+                }
+            },
+            add() {
+                this.books = {}
+                this.dialogVisible = true
+            },
+            addSuccess() {
+                axios.post(`/insertDate`, this.books).then((res) => {
+                    this.dialogVisible = false
+                    this.$message.info('添加成功!')
+                    // 3秒后再执行该操作
+                    setTimeout(() => {
+                        this.loadData();
+                    }, 2000);
+                }).catch((err) => {
+                    this.$message.info('添加失败!')
+                })
+            }
+        }
+    })
+</script>
 </html>

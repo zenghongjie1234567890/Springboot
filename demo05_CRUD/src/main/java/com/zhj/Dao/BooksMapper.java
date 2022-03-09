@@ -21,8 +21,6 @@ public interface BooksMapper {
 
     List<Books> selectByExample(BooksExample example);
 
-    List<Books> selectAll();
-
     Books selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") Books record, @Param("example") BooksExample example);
