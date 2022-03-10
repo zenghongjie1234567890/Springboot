@@ -1,1 +1,8 @@
-springboot的网页默认放在templates中，会自动识别该包的html文件  (不能在该包下再次创建其他包，会识别不出来)
+1.springboot的网页默认放在templates中，会自动识别该包的html文件,直接根据Controller层里面网页名字进行映射，如果
+ 网页放在其他包下，控制层的网页动态映射将会失效。      (不能在该包下再次创建其他包，会识别不出来)
+
+2.网页报404,505等错误的处理网页,放在templates/error目录下，springboot会自动识别对应状态码的文件。
+
+3.记住：这个文件夹下面的所有的页面，只能通过controller层进行跳转
+  写了controller层的跳转，还需要一个templates的模本引擎的依赖，创建springboot项目的时候已经自动下载,
+  他帮我们去掉.html，可以直接通过文件名访问 (因此通过输入xxx.html是访问不了此包下的网页文件的)
